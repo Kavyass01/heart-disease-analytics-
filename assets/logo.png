@@ -1,0 +1,54 @@
+from PIL import Image, ImageDraw, ImageFont
+
+# Create canvas
+width, height = 800, 800
+img = Image.new("RGB", (width, height), color=(255, 255, 255))
+
+draw = ImageDraw.Draw(img)
+
+# Draw red heart
+draw.polygon(
+    [
+        (400, 650),
+        (150, 350),
+        (250, 150),
+        (400, 250),
+        (550, 150),
+        (650, 350),
+    ],
+    fill=(220, 20, 60)
+)
+
+# Draw medical cross
+draw.rectangle((350, 250, 450, 550), fill="white")
+draw.rectangle((250, 350, 550, 450), fill="white")
+
+# Add text
+try:
+    font = ImageFont.truetype("arial.ttf", 50)
+except:
+    font = ImageFont.load_default()
+
+draw.text(
+    (120, 700),
+    "Heart Disease Analytics",
+    fill=(0, 0, 0),
+    font=font
+)
+
+# Save logo
+img.save("logo.png")
+
+print("logo.png created successfully!")
+
+
+
+
+
+
+import streamlit as st
+
+st.sidebar.image(
+    "assets/logo.png",
+    width=180
+)
