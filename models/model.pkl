@@ -1,0 +1,47 @@
+import streamlit as st
+import pandas as pd
+import joblib
+
+model = joblib.load("models/model.pkl")
+
+st.title("❤️ Heart Disease Predictor")
+
+age = st.slider("Age", 20, 90, 50)
+sex = st.selectbox("Sex", [0, 1])
+cp = st.slider("Chest Pain Type", 0, 3, 1)
+trtbps = st.slider("Blood Pressure", 80, 200, 120)
+chol = st.slider("Cholesterol", 100, 600, 200)
+fbs = st.selectbox("Fasting Blood Sugar", [0, 1])
+restecg = st.slider("Rest ECG", 0, 2, 1)
+thalachh = st.slider("Max Heart Rate", 60, 220, 150)
+exng = st.selectbox("Exercise Angina", [0, 1])
+oldpeak = st.slider("Old Peak", 0.0, 6.0, 1.0)
+slp = st.slider("Slope", 0, 2, 1)
+caa = st.slider("Major Vessels", 0, 4, 0)
+thall = st.slider("Thal", 0, 3, 2)
+
+if st.button("Predict Risk"):
+
+    sample = pd.DataFrame([[
+        age, sex, cp, trtbps, chol,
+        fbs, restecg, thalachh,
+        exng, oldpeak, slp,
+        caa, thall
+    ]], columns=[
+        "age","sex","cp","trtbps","chol",
+        "fbs","restecg","thalachh",
+        "exng","oldpeak","slp",
+        "caa","thall"
+    ])
+
+    prediction = model.predict(sample)[0]
+    probability = model.predict_proba(sample)[0][1]
+
+    if prediction == 1:
+        st.error(
+            f"High Risk Detected ({probability:.1%})"
+        )
+    else:
+        st.success(
+            f"Low Risk ({probability:.1%})"
+        )
