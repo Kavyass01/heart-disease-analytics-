@@ -1,0 +1,103 @@
+import pandas as pd
+
+# Load dataset
+df = pd.read_csv("heart.csv")
+
+# Display first 5 rows
+print("First 5 Rows:")
+print(df.head())
+
+# Dataset information
+print("\nDataset Info:")
+print(df.info())
+
+# Shape
+print("\nShape:")
+print(df.shape)
+
+# Missing values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# Statistical summary
+print("\nStatistics:")
+print(df.describe())
+
+# Target distribution
+print("\nHeart Disease Distribution:")
+print(df["output"].value_counts())
+
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="Heart Disease Dashboard", layout="wide")
+
+st.title("❤️ Heart Disease Analytics Dashboard")
+
+# Load data
+df = pd.read_csv("heart.csv")
+
+st.subheader("Dataset Preview")
+st.dataframe(df)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("Rows", df.shape[0])
+
+with col2:
+    st.metric("Columns", df.shape[1])
+
+with col3:
+    disease_rate = round(df["output"].mean() * 100, 2)
+    st.metric("Disease Rate (%)", disease_rate)
+
+st.subheader("Statistical Summary")
+st.dataframe(df.describe())
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+st.subheader("Correlation Heatmap")
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm", ax=ax)
+
+st.pyplot(fig)
+
+import plotly.express as px
+
+fig = px.pie(
+    df,
+    names="output",
+    title="Heart Disease Distribution"
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+X = df.drop("output", axis=1)
+y = df["output"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42
+)
+
+model = RandomForestClassifier(
+    n_estimators=200,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+pred = model.predict(X_test)
+
+acc = accuracy_score(y_test, pred)
+
+print(f"Accuracy: {acc:.2%}")
